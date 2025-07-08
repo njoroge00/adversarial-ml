@@ -228,7 +228,7 @@ def evaluate_models():
     X_test_tensor = data['X_test']  # This is a FloatTensor
     y_test_tensor_float = data['y_test'] # This is a FloatTensor (for BCE evaluation)
 
-    # Convert y_test (float tensor) to integer NumPy array for metrics and feature importance
+    # Convert y_test (float tensor) to integer NumPy array for metric calculations
     # This conversion should happen here once
     y_test_int_np = y_test_tensor_float.cpu().numpy().astype(int)
 
@@ -659,7 +659,7 @@ def initialize():
             robust_model.load_state_dict(torch.load("robust_model.pth"))
             models['robust'] = robust_model
         else:
-            standard_model = train_model(X_train, y_train, X_test, y_test, input_size)
+            standard_model = train_model(X_train, y_train, X_test, y_test)
             torch.save(standard_model.state_dict(), "standard_model.pth")  # Save standard model
             models['standard'] = standard_model
             robust_model = train_robust_model(X_train, y_train, input_size)
@@ -677,7 +677,7 @@ def evaluate_models():
     X_test_tensor = data['X_test']  # This is a FloatTensor
     y_test_tensor_float = data['y_test'] # This is a FloatTensor (for BCE evaluation)
 
-    # Convert y_test (float tensor) to integer NumPy array for metrics and feature importance
+    # Convert y_test (float tensor) to integer NumPy array for metric calculations
     # This conversion should happen here once
     y_test_int_np = y_test_tensor_float.cpu().numpy().astype(int)
 
