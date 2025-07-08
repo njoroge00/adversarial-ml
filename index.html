@@ -181,6 +181,7 @@
             cursor: pointer;
             transition: var(--transition);
             text-align: center;
+            font-family: sans-serif; /* Explicitly set font for tabs */
         }
 
         .tab-button:hover {
@@ -1053,6 +1054,9 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
                     // Render confusion matrix
                     renderConfusionMatrix(data.confusion_matrix);
+
+                    // Update comparison table with initial data
+                    updateComparisonTable(data.comparison_data);
                 })
                 .catch(error => {
                     console.error('Error loading model info:', error);
@@ -1319,12 +1323,12 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                         document.getElementById('adversarial-confidence').textContent = `${(data.adversarial_confidence * 100).toFixed(1)}%`;
 
                         // Display original sample
-                        document.getElementById('original-sample').textContent = formatSample(data.original_sample);
+                        document.getElementById('original-sample').innerHTML = data.original_sample;
                         document.getElementById('original-prediction').textContent = `Predicted: ${data.original_prediction} (${(data.original_confidence * 100).toFixed(1)}% confidence)`;
                         document.getElementById('original-prediction').className = data.original_prediction === data.true_label ? 'result-badge success' : 'result-badge danger';
 
                         // Display adversarial sample
-                        document.getElementById('adversarial-sample').textContent = formatSample(data.adversarial_sample);
+                        document.getElementById('adversarial-sample').innerHTML = data.adversarial_sample;
                         document.getElementById('adversarial-prediction').textContent = `Predicted: ${data.adversarial_prediction} (${(data.adversarial_confidence * 100).toFixed(1)}% confidence)`;
                         document.getElementById('adversarial-prediction').className = data.adversarial_prediction === data.true_label ? 'result-badge success' : 'result-badge danger';
 
@@ -1347,9 +1351,9 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
         });
 
         // Format sample for display
-        function formatSample(sample) {
-            return sample.replace(/,/g, ', ');
-        }
+        // function formatSample(sample) {
+        //     return sample.replace(/,/g, ', ');
+        // }
 
         // Render perturbation chart
         function renderPerturbationChart(originalFeatures, adversarialFeatures) {
@@ -1483,17 +1487,18 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                         document.getElementById('robust-model-accuracy').textContent = `${(data.robust.accuracy * 100).toFixed(1)}%`;
 
                         // Display standard model prediction
-                        document.getElementById('standard-adv-sample').textContent = formatSample(data.adversarial_sample);
-                        document.getElementById('standard-adv-prediction').textContent = `Predicted: ${data.standard.prediction} (${(data.standard.confidence * 100).toFixed(1)}% confidence)`;
-                        document.getElementById('standard-adv-prediction').className = data.standard.prediction === data.true_label ? 'result-badge success' : 'result-badge danger';
+                        document.getElementById('standard-adv-sample').innerHTML = data.adversarial_sample;
+                        document.getElementById('standard-adv-prediction').textContent = `Predicted: ${data.standard_prediction_on_adv} (${(data.standard_confidence_on_adv * 100).toFixed(1)}% confidence)`;
+                        document.getElementById('standard-adv-prediction').className = data.standard_prediction_on_adv === data.true_label ? 'result-badge success' : 'result-badge danger';
 
                         // Display robust model prediction
-                        document.getElementById('robust-adv-sample').textContent = formatSample(data.adversarial_sample);
-                        document.getElementById('robust-adv-prediction').textContent = `Predicted: ${data.robust.prediction} (${(data.robust.confidence * 100).toFixed(1)}% confidence)`;
-                        document.getElementById('robust-adv-prediction').className = data.robust.prediction === data.true_label ? 'result-badge success' : 'result-badge danger';
+                        document.getElementById('robust-adv-sample').innerHTML = data.adversarial_sample;
+                        document.getElementById('robust-adv-prediction').textContent = `Predicted: ${data.robust_prediction_on_adv} (${(data.robust_confidence_on_adv * 100).toFixed(1)}% confidence)`;
+                        document.getElementById('robust-adv-prediction').className = data.robust_prediction_on_adv === data.true_label ? 'result-badge success' : 'result-badge danger';
 
-                        // Render confidence comparison chart
-                        renderConfidenceComparisonChart(data.standard.confidence_comparison);
+                        // Update comparison page
+                    // Render confidence comparison chart
+                        renderConfidenceComparisonChart(data.confidence_comparison);
 
                         // Show results
                         document.getElementById('robust-results').style.display = 'block';

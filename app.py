@@ -910,7 +910,8 @@ def get_model_info():
         'f1': metrics.get('f1'), # Use .get()
         'model_architecture': model_architecture,
         'feature_importance': models.get('feature_importance'), # Use .get()
-        'confusion_matrix': metrics.get('confusion_matrix') # Use .get()
+        'confusion_matrix': metrics.get('confusion_matrix'), # Use .get()
+        'comparison_data': models.get('comparison_metrics') # Add comparison data here
     })
 
 @app.route('/run_attack', methods=['POST'])
@@ -1165,21 +1166,30 @@ def robustness_check():
     standard_results = robustness_results.get('standard', {})
     robust_results = robustness_results.get('robust', {})
 
-    # Prepare data for comparison table (if needed, otherwise remove)
-    comparison_data = {
-        'standard': {
-            'clean_accuracy': models['standard_metrics']['accuracy'] if 'standard_metrics' in models else 0,
-            'fgsm_accuracy': standard_results.get('accuracy') if standard_results.get('attack_type') == 'fgsm' else 0,
-            'pgd_accuracy': standard_results.get('accuracy') if standard_results.get('attack_type') == 'pgd' else 0,
-            'deepfool_accuracy': standard_results.get('accuracy') if standard_results.get('attack_type') == 'deepfool' else 0,
-        },
-        'robust': {
-            'clean_accuracy': models['robust_metrics']['accuracy'] if 'robust_metrics' in models else 0,
-            'fgsm_accuracy': robust_results.get('accuracy') if robust_results.get('attack_type') == 'fgsm' else 0,
-            'pgd_accuracy': robust_results.get('accuracy') if robust_results.get('attack_type') == 'pgd' else 0,
-            'deepfool_accuracy': robust_results.get('accuracy') if robust_results.get('attack_type') == 'deepfool' else 0,
+    # Prepare data for comparison table
+    # Store results in a more structured way for comparison tab
+    if 'comparison_metrics' not in models:
+        models['comparison_metrics'] = {
+            'standard': {'clean_accuracy': 0, 'fgsm_accuracy': 0, 'pgd_accuracy': 0, 'deepfool_accuracy': 0},
+            'robust': {'clean_accuracy': 0, 'fgsm_accuracy': 0, 'pgd_accuracy': 0, 'deepfool_accuracy': 0}
         }
-    }
+
+    # Update clean accuracies (these are constant once models are trained)
+    models['comparison_metrics']['standard']['clean_accuracy'] = models['standard_metrics']['accuracy']
+    models['comparison_metrics']['robust']['clean_accuracy'] = models['robust_metrics']['accuracy']
+
+    # Update attack-specific accuracies
+    if standard_results.get('attack_type') == 'fgsm':
+        models['comparison_metrics']['standard']['fgsm_accuracy'] = standard_results.get('accuracy', 0)
+        models['comparison_metrics']['robust']['fgsm_accuracy'] = robust_results.get('accuracy', 0)
+    elif standard_results.get('attack_type') == 'pgd':
+        models['comparison_metrics']['standard']['pgd_accuracy'] = standard_results.get('accuracy', 0)
+        models['comparison_metrics']['robust']['pgd_accuracy'] = robust_results.get('accuracy', 0)
+    elif standard_results.get('attack_type') == 'deepfool':
+        models['comparison_metrics']['standard']['deepfool_accuracy'] = standard_results.get('accuracy', 0)
+        models['comparison_metrics']['robust']['deepfool_accuracy'] = robust_results.get('accuracy', 0)
+
+    comparison_data = models['comparison_metrics']
 
     # Select a random correctly classified example from the test set to generate an adversarial sample for display
     # This is for the example comparison in the UI, not for the full robustness evaluation
