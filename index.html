@@ -6,17 +6,17 @@
     <title>IDS Adversarial Attack Demo</title>
     <style>
         :root {
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-tertiary: #2d2d2d;
-            --text-primary: #e1e1e1;
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --text-primary: #e0e0e0;
             --text-secondary: #a0a0a0;
-            --accent-primary: #bb86fc;
-            --accent-secondary: #03dac6;
-            --danger: #cf6679;
-            --success: #03dac6;
-            --warning: #ffb74d;
-            --info: #64b5f6;
+            --accent-primary: #3498db; /* Blue */
+            --accent-secondary: #f1c40f; /* Yellow */
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #2196f3;
             --border-radius: 8px;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             --transition: all 0.3s ease;
@@ -24,17 +24,17 @@
         }
 
         [data-theme="light"] {
-            --bg-primary: #f5f5f5;
+            --bg-primary: #f4f7fc;
             --bg-secondary: #ffffff;
-            --bg-tertiary: #e0e0e0;
-            --text-primary: #212121;
-            --text-secondary: #616161;
-            --accent-primary: #6200ee;
-            --accent-secondary: #03dac6;
-            --danger: #b00020;
-            --success: #00c853;
-            --warning: #f57c00;
-            --info: #2196f3;
+            --bg-tertiary: #e8eff7;
+            --text-primary: #2c3e50;
+            --text-secondary: #576c7a;
+            --accent-primary: #3498db;
+            --accent-secondary: #f1c40f;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
             --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
@@ -45,13 +45,11 @@
         }
 
         body {
-            font-family: sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             transition: var(--transition);
-            padding: 0;
-            margin: 0;
         }
 
         header {
@@ -181,7 +179,7 @@
             cursor: pointer;
             transition: var(--transition);
             text-align: center;
-            font-family: sans-serif; /* Explicitly set font for tabs */
+            font-family: 'Inter', sans-serif;
         }
 
         .tab-button:hover {
@@ -232,7 +230,7 @@
         input:focus, select:focus {
             border-color: var(--accent-primary);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.3);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3); /* Blue shadow */
         }
 
         button {
@@ -248,7 +246,7 @@
         }
 
         button:hover {
-            background-color: #a56ef2;
+            background-color: #2980b9; /* Darker blue */
             transform: translateY(-2px);
         }
 
@@ -259,43 +257,12 @@
             transform: none;
         }
 
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background-color: var(--bg-tertiary);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 16px 0;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
-
         .result-box {
             background-color: var(--bg-tertiary);
             border-radius: var(--border-radius);
             padding: 16px;
             margin-top: 16px;
             margin-bottom: 16px;
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .result-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin: 0;
         }
 
         .result-badge {
@@ -308,7 +275,7 @@
 
         .result-badge.success {
             background-color: var(--success);
-            color: #121212;
+            color: white;
         }
 
         .result-badge.danger {
@@ -316,81 +283,22 @@
             color: white;
         }
 
-        .result-badge.warning {
-            background-color: var(--warning);
-            color: #121212;
-        }
-
-        .result-content {
-            color: var(--text-secondary);
-        }
-
         .data-display {
             font-family: 'Roboto Mono', monospace;
             font-size: 0.9rem;
             overflow-x: auto;
-            white-space: pre;
+            white-space: pre-wrap; /* Changed from pre to pre-wrap */
+            word-wrap: break-word; /* Added for better wrapping */
             padding: 16px;
             background-color: var(--bg-primary);
             border-radius: 4px;
             border: 1px solid var(--bg-tertiary);
         }
 
-        .highlight {
-            color: var(--accent-secondary);
-            font-weight: bold;
-        }
-
-        .diff-highlight {
-            background-color: rgba(255, 87, 51, 0.3);
-            border-radius: 2px;
-            padding: 0 2px;
-        }
-
         .chart-container {
             width: 100%;
             height: 300px;
             margin: 24px 0;
-        }
-
-        .feature-importance {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .feature-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .feature-name {
-            width: 120px;
-            text-align: right;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .feature-value-container {
-            flex: 1;
-            height: 20px;
-            background-color: var(--bg-tertiary);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .feature-value {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 10px;
-        }
-
-        .feature-percent {
-            width: 50px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
         }
 
         .side-by-side {
@@ -410,24 +318,11 @@
             background-color: var(--bg-tertiary);
             padding: 16px;
             border-radius: var(--border-radius);
-            overflow-wrap: break-word; /* Ensures long words break and wrap */
-            word-wrap: break-word; /* Legacy support for word-wrap */
-            white-space: pre-wrap; /* Preserves whitespace but wraps text */
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: pre-wrap;
             font-size: 0.9rem;
             margin-top: 8px;
-        }
-
-        #attack-results, #robust-results, #inference-results {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px solid var(--bg-tertiary);
-        }
-
-        .attack-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 16px;
-            margin-top: 16px;
         }
 
         .stat-card {
@@ -468,10 +363,6 @@
             color: var(--accent-primary);
         }
 
-        .comparison-table tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
         footer {
             text-align: center;
             padding: 24px;
@@ -479,138 +370,6 @@
             background-color: var(--bg-secondary);
             color: var(--text-secondary);
             font-size: 0.9rem;
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 24px auto;
-        }
-
-        .loading div {
-            position: absolute;
-            top: 33px;
-            width: 13px;
-            height: 13px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-        }
-
-        .loading div:nth-child(1) {
-            left: 8px;
-            animation: loading1 0.6s infinite;
-        }
-
-        .loading div:nth-child(2) {
-            left: 8px;
-            animation: loading2 0.6s infinite;
-        }
-
-        .loading div:nth-child(3) {
-            left: 32px;
-            animation: loading2 0.6s infinite;
-        }
-
-        .loading div:nth-child(4) {
-            left: 56px;
-            animation: loading3 0.6s infinite;
-        }
-
-        @keyframes loading1 {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes loading3 {
-            0% { transform: scale(1); }
-            100% { transform: scale(0); }
-        }
-
-        @keyframes loading2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(24px, 0); }
-        }
-
-        /* Model Schema Visualization */
-        .model-schema {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            margin: 24px 0;
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        .layer-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .layer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .layer-title {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .neurons {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .neuron {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: var(--accent-primary);
-        }
-
-        .connection-line {
-            width: 40px;
-            height: 2px;
-            background-color: var(--bg-tertiary);
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--bg-tertiary);
-            color: var(--text-primary);
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
@@ -645,47 +404,15 @@
                 <div class="card">
                     <h2>Project Overview</h2>
                     <p>This web application demonstrates how adversarial attacks can bypass Network Intrusion Detection Systems (IDS) and how robust models can defend against these attacks.</p>
-
-                    <h3>Dataset</h3>
-                    <p>We're using the NSL-KDD dataset, which is a refined version of the KDD Cup 1999 dataset for network intrusion detection systems. The dataset contains various network connection records labeled as normal or specific attack types.</p>
-
-                    <div class="data-display">
-<span class="highlight">Sample Features:</span>
-Duration, Protocol Type, Service, Connection Status, Source Bytes, Destination Bytes,
-Land Flag, Wrong Fragments, Urgent Packets, Hot Indicators, Failed Logins,
-Logged In Status, # Compromised Conditions, Root Shell Indicator, SU Attempted,
-# Root Accesses, # File Creation Operations, # Shell Prompts, # Access Files,
-# Outbound Commands, Is Host Login, Is Guest Login, Count, Srv Count,
-Serror Rate, Srv Serror Rate, Rerror Rate, Srv Rerror Rate, Same Srv Rate,
-Diff Srv Rate, Srv Diff Host Rate, Dst Host Count, Dst Host Srv Count,
-Dst Host Same Srv Rate, Dst Host Diff Srv Rate, Dst Host Same Src Port Rate,
-Dst Host Srv Diff Host Rate, Dst Host Serror Rate, Dst Host Srv Serror Rate,
-Dst Host Rerror Rate, Dst Host Srv Rerror Rate
-                    </div>
-
                     <h3>Sample Data Records</h3>
                     <div class="data-display" id="sample-data">Loading sample data...</div>
-
-                    <h3>Workflow</h3>
-                    <ol>
-                        <li>Examine the neural network model architecture trained to detect network intrusions</li>
-                        <li>Generate adversarial examples using different attack methods (FGSM, PGD, etc.)</li>
-                        <li>Analyze how these adversarial examples affect the model's predictions</li>
-                        <li>Compare the original model's vulnerability with a robust model's resilience</li>
-                    </ol>
                 </div>
             </div>
 
             <div id="model" class="tab-content">
                 <div class="card">
                     <h2>Neural Network Model</h2>
-                    <p>We've trained a PyTorch neural network to classify network traffic as normal or intrusive. Below is the model architecture and its performance metrics on the test set.</p>
-
-                    <h3>Model Architecture</h3>
-                    <div class="model-schema" id="model-architecture">
-                        <!-- Model architecture will be generated here -->
-                    </div>
-
+                    <p>We've trained a PyTorch neural network to classify network traffic as normal or intrusive. Below is its performance metrics on the test set.</p>
                     <h3>Model Performance</h3>
                     <div class="grid">
                         <div class="stat-card">
@@ -722,7 +449,7 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
             <div id="attacks" class="tab-content">
                 <div class="card">
                     <h2>Adversarial Attacks</h2>
-                    <p>Adversarial attacks generate specially crafted inputs designed to fool the model while appearing legitimate to human observers.</p>
+                    <p>Adversarial attacks generate specially crafted inputs designed to fool the model.</p>
 
                     <div class="form-group">
                         <label for="attack-type">Select Attack Method:</label>
@@ -741,33 +468,8 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
                     <button id="run-attack-btn">Generate Adversarial Examples</button>
 
-                    <div id="attack-progress" class="progress-container" style="display: none;">
-                        <div class="progress-bar" id="attack-progress-bar"></div>
-                    </div>
-
                     <div id="attack-results" style="display: none;">
                         <h3>Attack Results</h3>
-
-                        <div class="attack-stats">
-                            <div class="stat-card">
-                                <div class="stat-value" id="attack-success-rate">--</div>
-                                <div class="stat-label">Attack Success Rate</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="avg-perturbation">--</div>
-                                <div class="stat-label">Avg. Perturbation</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="original-confidence">--</div>
-                                <div class="stat-label">Original Confidence</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="adversarial-confidence">--</div>
-                                <div class="stat-label">Adversarial Confidence</div>
-                            </div>
-                        </div>
-
-                        <h3>Example Attack</h3>
                         <div class="side-by-side">
                             <div>
                                 <h4>Original Sample (Correctly Classified)</h4>
@@ -780,11 +482,6 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                                 <div id="adversarial-prediction" class="result-badge danger"></div>
                             </div>
                         </div>
-
-                        <h3>Feature Perturbation Visualization</h3>
-                        <div class="chart-container">
-                            <canvas id="perturbation-chart"></canvas>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -792,7 +489,7 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
             <div id="robustness" class="tab-content">
                 <div class="card">
                     <h2>Robustness Analysis</h2>
-                    <p>Here we compare how a robustly trained model defends against the same adversarial attacks that fool the original model.</p>
+                    <p>Here we compare how a robustly trained model defends against the same adversarial attacks.</p>
 
                     <div class="form-group">
                         <label for="robust-attack-type">Select Attack Method:</label>
@@ -811,13 +508,8 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
                     <button id="test-robust-btn">Test Robust Model</button>
 
-                    <div id="robust-progress" class="progress-container" style="display: none;">
-                        <div class="progress-bar" id="robust-progress-bar"></div>
-                    </div>
-
                     <div id="robust-results" style="display: none;">
                         <h3>Robustness Analysis Results</h3>
-
                         <div class="side-by-side">
                             <div class="stat-card">
                                 <div class="stat-value" id="standard-model-accuracy">--</div>
@@ -827,25 +519,6 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                                 <div class="stat-value" id="robust-model-accuracy">--</div>
                                 <div class="stat-label">Robust Model Accuracy Under Attack</div>
                             </div>
-                        </div>
-
-                        <h3>Example Comparison</h3>
-                        <div class="side-by-side">
-                            <div>
-                                <h4>Standard Model Prediction on Adversarial Sample</h4>
-                                <div id="standard-adv-prediction" class="result-badge danger"></div>
-                                <div id="standard-adv-sample" class="packet-display"></div>
-                            </div>
-                            <div>
-                                <h4>Robust Model Prediction on Same Adversarial Sample</h4>
-                                <div id="robust-adv-prediction" class="result-badge success"></div>
-                                <div id="robust-adv-sample" class="packet-display"></div>
-                            </div>
-                        </div>
-
-                        <h3>Confidence Comparison</h3>
-                        <div class="chart-container">
-                            <canvas id="confidence-comparison-chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -868,47 +541,12 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                                 <th>Metric</th>
                                 <th>Standard Model</th>
                                 <th>Robust Model</th>
-                                <th>Improvement</th>
                             </tr>
                         </thead>
                         <tbody id="comparison-table-body">
-                            <tr>
-                                <td>Clean Accuracy</td>
-                                <td id="clean-acc-standard">--</td>
-                                <td id="clean-acc-robust">--</td>
-                                <td id="clean-acc-improvement">--</td>
-                            </tr>
-                            <tr>
-                                <td>FGSM Accuracy (ε=0.1)</td>
-                                <td id="fgsm-acc-standard">--</td>
-                                <td id="fgsm-acc-robust">--</td>
-                                <td id="fgsm-acc-improvement">--</td>
-                            </tr>
-                            <tr>
-                                <td>PGD Accuracy (ε=0.1)</td>
-                                <td id="pgd-acc-standard">--</td>
-                                <td id="pgd-acc-robust">--</td>
-                                <td id="pgd-acc-improvement">--</td>
-                            </tr>
-                            <tr>
-                                <td>DeepFool Accuracy</td>
-                                <td id="deepfool-acc-standard">--</td>
-                                <td id="deepfool-acc-robust">--</td>
-                                <td id="deepfool-acc-improvement">--</td>
-                            </tr>
+                            <!-- Data will be populated by JavaScript -->
                         </tbody>
                     </table>
-
-                    <h3>Key Findings</h3>
-                    <div class="result-box">
-                        <div class="result-header">
-                            <h4 class="result-title">Robustness Impact</h4>
-                        </div>
-                        <div class="result-content">
-                            <p>The robust model demonstrates significantly higher resilience against adversarial attacks, with an average improvement of <span id="avg-improvement" class="highlight">--</span> in accuracy across all attack types.</p>
-                            <p>While the standard model's performance drops drastically under attack, the robust model maintains a reasonable detection rate, highlighting the importance of adversarial training for security-critical applications like intrusion detection systems.</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -950,8 +588,6 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
     <script>
         let featureImportanceChart = null;
         let confusionMatrixChart = null;
-        let perturbationChart = null;
-        let confidenceComparisonChart = null;
         let accuracyComparisonChart = null;
 
         // Theme toggle functionality
@@ -961,33 +597,17 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
         themeToggle.addEventListener('click', () => {
             const currentTheme = htmlElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
             htmlElement.setAttribute('data-theme', newTheme);
-
-            // Update the icon
             const icon = themeToggle.querySelector('i');
-            if (newTheme === 'dark') {
-                icon.className = 'fas fa-sun';
-            } else {
-                icon.className = 'fas fa-moon';
-            }
-
-            // Store preference
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
             localStorage.setItem('theme', newTheme);
         });
 
-        // Check for saved theme preference
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             htmlElement.setAttribute('data-theme', savedTheme);
-
-            // Update the icon
             const icon = themeToggle.querySelector('i');
-            if (savedTheme === 'dark') {
-                icon.className = 'fas fa-sun';
-            } else {
-                icon.className = 'fas fa-moon';
-            }
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
 
         // Tab functionality
@@ -997,12 +617,8 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const tabId = button.getAttribute('data-tab');
-
-                // Update active tab button
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-
-                // Show selected tab content
                 tabContents.forEach(content => {
                     content.classList.remove('active');
                     if (content.id === tabId) {
@@ -1012,200 +628,74 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
             });
         });
 
-        // Range input value display
+        // Epsilon sliders
         const epsilonInput = document.getElementById('epsilon');
         const epsilonValue = document.getElementById('epsilon-value');
-
-        epsilonInput.addEventListener('input', () => {
-            epsilonValue.textContent = epsilonInput.value;
-        });
-
         const robustEpsilonInput = document.getElementById('robust-epsilon');
         const robustEpsilonValue = document.getElementById('robust-epsilon-value');
 
-        robustEpsilonInput.addEventListener('input', () => {
-            robustEpsilonValue.textContent = robustEpsilonInput.value;
+        epsilonInput.addEventListener('input', () => {
+            epsilonValue.textContent = epsilonInput.value;
+            robustEpsilonInput.value = epsilonInput.value;
+            robustEpsilonValue.textContent = epsilonInput.value;
         });
 
-        // Load sample data
+        robustEpsilonInput.addEventListener('input', () => {
+            robustEpsilonValue.textContent = robustEpsilonInput.value;
+            epsilonInput.value = robustEpsilonInput.value;
+            epsilonValue.textContent = robustEpsilonInput.value;
+        });
+
+        // Load initial data
         function loadSampleData() {
             fetch('/sample_data')
                 .then(response => response.json())
                 .then(data => {
                     const sampleDataEl = document.getElementById('sample-data');
-
-                    // Format and display sample data
                     let sampleHtml = '';
                     data.samples.forEach((sample, index) => {
-                        const label = sample.split(',').pop().trim();
-                        const isIntrusion = label !== 'normal';
-
-                        sampleHtml += `<div>${index + 1}. <span class="${isIntrusion ? 'diff-highlight' : ''}">${sample}</span></div>`;
+                        sampleHtml += `<div>${index + 1}. ${sample}</div>`;
                     });
-
                     sampleDataEl.innerHTML = sampleHtml;
-                })
-                .catch(error => {
-                    console.error('Error loading sample data:', error);
-                    document.getElementById('sample-data').innerHTML = 'Error loading sample data. Please check the console for details.';
                 });
         }
 
-        // Load model information
         function loadModelInfo() {
             fetch('/model_info')
                 .then(response => response.json())
                 .then(data => {
-                    // Update model metrics
                     document.getElementById('accuracy').textContent = (data.accuracy * 100).toFixed(2) + '%';
                     document.getElementById('precision').textContent = (data.precision * 100).toFixed(2) + '%';
                     document.getElementById('recall').textContent = (data.recall * 100).toFixed(2) + '%';
                     document.getElementById('f1').textContent = (data.f1 * 100).toFixed(2) + '%';
-
-                    // Render model architecture
-                    renderModelArchitecture(data.model_architecture);
-
-                    // Render feature importance chart
                     renderFeatureImportanceChart(data.feature_importance);
-
-                    // Render confusion matrix
                     renderConfusionMatrix(data.confusion_matrix);
-
-                    // Update comparison table with initial data
-                    updateComparisonTable(data.comparison_data);
-                })
-                .catch(error => {
-                    console.error('Error loading model info:', error);
                 });
         }
 
-        // Render model architecture visualization
-        function renderModelArchitecture(architecture) {
-            const container = document.getElementById('model-architecture');
-
-            let html = '';
-
-            // Input layer
-            html += '<div class="layer-container">';
-            html += '<div class="layer">';
-            html += '<div class="layer-title">Input Layer</div>';
-            html += '<div class="neurons">';
-
-            // Show some neurons for input layer
-            for (let i = 0; i < 5; i++) {
-                html += '<div class="neuron"></div>';
-            }
-            html += '<div>...</div>';
-            html += '<div class="neuron"></div>';
-            html += '</div></div>';
-
-            html += '<div class="connection-line"></div>';
-
-            // Hidden layers
-            for (let i = 0; i < architecture.hidden_layers.length; i++) {
-                const layerSize = architecture.hidden_layers[i];
-
-                html += '<div class="layer">';
-                html += `<div class="layer-title">Hidden Layer ${i+1} (${layerSize})</div>`;
-                html += '<div class="neurons">';
-
-                // Show up to 7 neurons for each hidden layer
-                const neuronCount = Math.min(layerSize, 7);
-                for (let j = 0; j < neuronCount; j++) {
-                    html += '<div class="neuron"></div>';
-                }
-
-                if (layerSize > 7) {
-                    html += '<div>...</div>';
-                }
-
-                html += '</div></div>';
-
-                if (i < architecture.hidden_layers.length - 1 || true) {
-                    html += '<div class="connection-line"></div>';
-                }
-            }
-
-            // Output layer
-            html += '<div class="layer">';
-            html += '<div class="layer-title">Output Layer</div>';
-            html += '<div class="neurons">';
-            for (let i = 0; i < architecture.output_size; i++) {
-                html += '<div class="neuron"></div>';
-            }
-            html += '</div></div>';
-
-            html += '</div>';
-
-            container.innerHTML = html;
-        }
-
-        // Render feature importance chart
         function renderFeatureImportanceChart(featureImportance) {
-            if (featureImportanceChart) {
-                featureImportanceChart.destroy();
-            }
+            if (featureImportanceChart) featureImportanceChart.destroy();
             const ctx = document.getElementById('feature-importance-chart').getContext('2d');
-
-            // Sort feature importance and get top 10
-            const sortedFeatures = Object.entries(featureImportance)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10);
-
-            const labels = sortedFeatures.map(f => f[0]);
-            const values = sortedFeatures.map(f => f[1]);
-
+            const sortedFeatures = Object.entries(featureImportance).sort((a, b) => b[1] - a[1]).slice(0, 10);
             featureImportanceChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels,
+                    labels: sortedFeatures.map(f => f[0]),
                     datasets: [{
                         label: 'Feature Importance',
-                        data: values,
-                        backgroundColor: 'rgba(187, 134, 252, 0.7)',
-                        borderColor: '#BB86FC',
+                        data: sortedFeatures.map(f => f[1]),
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: '#3498db',
                         borderWidth: 1
                     }]
                 },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return (context.raw * 100).toFixed(2) + '%';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        y: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } } }
             });
         }
 
-        // Render confusion matrix
         function renderConfusionMatrix(confusionMatrix) {
-            if (confusionMatrixChart) {
-                confusionMatrixChart.destroy();
-            }
+            if (confusionMatrixChart) confusionMatrixChart.destroy();
             const ctx = document.getElementById('confusion-matrix-chart').getContext('2d');
-
             const data = {
                 labels: ['Normal', 'Intrusion'],
                 datasets: [{
@@ -1218,643 +708,149 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                     ],
                     backgroundColor: function(context) {
                         const value = context.dataset.data[context.dataIndex].v;
-                        const max = Math.max(...confusionMatrix[0], ...confusionMatrix[1]);
-
-                        // Different colors for TN, FP, FN, TP
-                        if (context.dataIndex === 0) return `rgba(3, 218, 198, ${0.3 + 0.7 * (value / max)})`; // TN
-                        if (context.dataIndex === 1) return `rgba(255, 183, 77, ${0.3 + 0.7 * (value / max)})`; // FP
-                        if (context.dataIndex === 2) return `rgba(207, 102, 121, ${0.3 + 0.7 * (value / max)})`; // FN
-                        if (context.dataIndex === 3) return `rgba(187, 134, 252, ${0.3 + 0.7 * (value / max)})`; // TP
+                        const max = Math.max(...confusionMatrix.flat());
+                        const opacity = 0.3 + 0.7 * (value / max);
+                        if (context.dataIndex === 0) return `rgba(46, 204, 113, ${opacity})`; // TN (Green)
+                        if (context.dataIndex === 1) return `rgba(241, 196, 15, ${opacity})`; // FP (Yellow)
+                        if (context.dataIndex === 2) return `rgba(231, 76, 60, ${opacity})`; // FN (Red)
+                        if (context.dataIndex === 3) return `rgba(52, 152, 219, ${opacity})`; // TP (Blue)
                     }
                 }]
             };
-
+            // Custom chart type for matrix
+            Chart.register({
+                id: 'matrix',
+                defaults: {},
+                controllers: {
+                    matrix: Chart.controllers.bar
+                }
+            });
             confusionMatrixChart = new Chart(ctx, {
                 type: 'matrix',
-                data: {
-                    datasets: [{
-                        label: 'Confusion Matrix',
-                        data: [
-                            {x: 'Predicted Normal', y: 'Actual Normal', v: confusionMatrix[0][0]},
-                            {x: 'Predicted Intrusion', y: 'Actual Normal', v: confusionMatrix[0][1]},
-                            {x: 'Predicted Normal', y: 'Actual Intrusion', v: confusionMatrix[1][0]},
-                            {x: 'Predicted Intrusion', y: 'Actual Intrusion', v: confusionMatrix[1][1]}
-                        ],
-                        backgroundColor: function(context) {
-                            const value = context.dataset.data[context.dataIndex].v;
-                            const max = Math.max(
-                                confusionMatrix[0][0], confusionMatrix[0][1],
-                                confusionMatrix[1][0], confusionMatrix[1][1]
-                            );
-
-                            // Different colors for TN, FP, FN, TP
-                            if (context.dataIndex === 0) return `rgba(3, 218, 198, ${0.3 + 0.7 * (value / max)})`; // TN
-                            if (context.dataIndex === 1) return `rgba(255, 183, 77, ${0.3 + 0.7 * (value / max)})`; // FP
-                            if (context.dataIndex === 2) return `rgba(207, 102, 121, ${0.3 + 0.7 * (value / max)})`; // FN
-                            if (context.dataIndex === 3) return `rgba(187, 134, 252, ${0.3 + 0.7 * (value / max)})`; // TP
-                        },
-                        width: 2,
-                        height: 2
-                    }]
-                },
+                data: data,
                 options: {
-                    responsive: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
                         tooltip: {
                             callbacks: {
-                                title: function() {
-                                    return '';
-                                },
                                 label: function(context) {
-                                    const x = context.dataset.data[context.dataIndex].x;
-                                    const y = context.dataset.data[context.dataIndex].y;
-                                    const v = context.dataset.data[context.dataIndex].v;
-                                    return [`${y}, ${x}`, `Count: ${v}`];
+                                    const item = context.dataset.data[context.dataIndex];
+                                    return `${item.y}, ${item.x}: ${item.v}`;
                                 }
                             }
                         }
                     },
                     scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Predicted Class'
-                            },
-                            ticks: {
-                                display: true
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Actual Class'
-                            },
-                            ticks: {
-                                display: true
-                            }
-                        }
+                        x: { title: { display: true, text: 'Predicted' } },
+                        y: { title: { display: true, text: 'Actual' } }
                     }
                 }
             });
         }
 
-        // Run adversarial attack
         document.getElementById('run-attack-btn').addEventListener('click', function() {
             const attackType = document.getElementById('attack-type').value;
             const epsilon = document.getElementById('epsilon').value;
-
-            // Show progress bar
-            document.getElementById('attack-progress').style.display = 'block';
-            document.getElementById('attack-progress-bar').style.width = '0%';
-            document.getElementById('attack-results').style.display = 'none';
-
-            // Disable button during attack
-            this.disabled = true;
-
-            // Update progress bar (simulated for now)
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                document.getElementById('attack-progress-bar').style.width = `${progress}%`;
-
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-
-                    // Fetch attack results
-                    fetch('/run_attack', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            attack_type: attackType,
-                            epsilon: parseFloat(epsilon),
-                            alpha: 0.01, // Default alpha for PGD
-                            num_iter: 10 // Default num_iter for PGD/DeepFool
-                        }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Display attack results
-                        document.getElementById('attack-success-rate').textContent = `${(data.overall_attack_success_rate_standard * 100).toFixed(1)}%`;
-                        document.getElementById('avg-perturbation').textContent = data.overall_avg_perturbation_standard.toFixed(4);
-                        document.getElementById('original-confidence').textContent = `${(data.original_confidence * 100).toFixed(1)}%`;
-                        document.getElementById('adversarial-confidence').textContent = `${(data.adversarial_confidence * 100).toFixed(1)}%`;
-
-                        // Display original sample
-                        document.getElementById('original-sample').innerHTML = data.original_sample;
-                        document.getElementById('original-prediction').textContent = `Predicted: ${data.original_prediction} (${(data.original_confidence * 100).toFixed(1)}% confidence)`;
-                        document.getElementById('original-prediction').className = data.original_prediction === data.true_label ? 'result-badge success' : 'result-badge danger';
-
-                        // Display adversarial sample
-                        document.getElementById('adversarial-sample').innerHTML = data.adversarial_sample;
-                        document.getElementById('adversarial-prediction').textContent = `Predicted: ${data.adversarial_prediction} (${(data.adversarial_confidence * 100).toFixed(1)}% confidence)`;
-                        document.getElementById('adversarial-prediction').className = data.adversarial_prediction === data.true_label ? 'result-badge success' : 'result-badge danger';
-
-                        // Render perturbation chart
-                        renderPerturbationChart(data.original_sample_features, data.adversarial_sample_features);
-
-                        // Show results
-                        document.getElementById('attack-results').style.display = 'block';
-
-                        // Re-enable button
-                        document.getElementById('run-attack-btn').disabled = false;
-                    })
-                    .catch(error => {
-                        console.error('Error running attack:', error);
-                        document.getElementById('attack-progress-bar').style.width = '100%';
-                        document.getElementById('run-attack-btn').disabled = false;
-                    });
-                }
-            }, 100);
-        });
-
-        // Render perturbation chart
-        function renderPerturbationChart(originalFeatures, adversarialFeatures) {
-            if (perturbationChart) {
-                perturbationChart.destroy();
-            }
-            const ctx = document.getElementById('perturbation-chart').getContext('2d');
-
-            // Calculate absolute differences
-            const differences = [];
-            const labels = [];
-            const originalValues = [];
-            const adversarialValues = [];
-
-            // Get top 10 differences
-            for (let i = 0; i < originalFeatures.length; i++) {
-                differences.push({
-                    index: i,
-                    diff: Math.abs(adversarialFeatures[i] - originalFeatures[i])
-                });
-            }
-
-            differences.sort((a, b) => b.diff - a.diff);
-
-            for (let i = 0; i < Math.min(10, differences.length); i++) {
-                const index = differences[i].index;
-                labels.push(`Feature ${index}`);
-                originalValues.push(originalFeatures[index]);
-                adversarialValues.push(adversarialFeatures[index]);
-            }
-
-            perturbationChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Original',
-                            data: originalValues,
-                            backgroundColor: 'rgba(3, 218, 198, 0.7)',
-                            borderColor: '#03DAC6',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Adversarial',
-                            data: adversarialValues,
-                            backgroundColor: 'rgba(207, 102, 121, 0.7)',
-                            borderColor: '#CF6679',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Top 10 Modified Features'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const datasetLabel = context.dataset.label;
-                                    const value = context.raw;
-                                    const index = context.dataIndex;
-
-                                    const originalValue = originalValues[index];
-                                    const adversarialValue = adversarialValues[index];
-                                    const diff = Math.abs(adversarialValue - originalValue);
-
-                                    return [
-                                        `${datasetLabel}: ${value.toFixed(4)}`,
-                                        `Difference: ${diff.toFixed(4)} (${(diff * 100 / Math.abs(originalValue)).toFixed(2)}%)`
-                                    ];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        y: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Test robust model
-        document.getElementById('test-robust-btn').addEventListener('click', function() {
-            const attackType = document.getElementById('robust-attack-type').value;
-            const epsilon = document.getElementById('robust-epsilon').value;
-
-            // Show progress bar
-            document.getElementById('robust-progress').style.display = 'block';
-            document.getElementById('robust-progress-bar').style.width = '0%';
-            document.getElementById('robust-results').style.display = 'none';
-
-            // Disable button during test
-            this.disabled = true;
-
-            // Update progress bar (simulated for now)
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                progress += 5;
-                document.getElementById('robust-progress-bar').style.width = `${progress}%`;
-
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-
-                    // Fetch robustness test results
-                    fetch('/test_robust_model', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            attack_type: attackType,
-                            epsilon: parseFloat(epsilon),
-                            alpha: 0.01, // Default alpha for PGD
-                            num_iter: 10 // Default num_iter for PGD/DeepFool
-                        }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Display test results
-                        document.getElementById('standard-model-accuracy').textContent = `${(data.standard.accuracy * 100).toFixed(1)}%`;
-                        document.getElementById('robust-model-accuracy').textContent = `${(data.robust.accuracy * 100).toFixed(1)}%`;
-
-                        // Display standard model prediction
-                        document.getElementById('standard-adv-sample').innerHTML = data.adversarial_sample;
-                        document.getElementById('standard-adv-prediction').textContent = `Predicted: ${data.standard_prediction_on_adv} (${(data.standard_confidence_on_adv * 100).toFixed(1)}% confidence)`;
-                        document.getElementById('standard-adv-prediction').className = data.standard_prediction_on_adv === data.true_label ? 'result-badge success' : 'result-badge danger';
-
-                        // Display robust model prediction
-                        document.getElementById('robust-adv-sample').innerHTML = data.adversarial_sample;
-                        document.getElementById('robust-adv-prediction').textContent = `Predicted: ${data.robust_prediction_on_adv} (${(data.robust_confidence_on_adv * 100).toFixed(1)}% confidence)`;
-                        document.getElementById('robust-adv-prediction').className = data.robust_prediction_on_adv === data.true_label ? 'result-badge success' : 'result-badge danger';
-
-                        // Render confidence comparison chart
-                        renderConfidenceComparisonChart(data.confidence_comparison);
-
-                        // Show results
-                        document.getElementById('robust-results').style.display = 'block';
-
-                        // Re-enable button
-                        document.getElementById('test-robust-btn').disabled = false;
-
-                        // Update comparison page
-                        updateComparisonTable(data.comparison_data);
-                    })
-                    .catch(error => {
-                        console.error('Error testing robust model:', error);
-                        document.getElementById('robust-progress-bar').style.width = '100%';
-                        document.getElementById('test-robust-btn').disabled = false;
-                    });
-                }
-            }, 100);
-        });
-
-        // Render confidence comparison chart
-        function renderConfidenceComparisonChart(comparisonData) {
-            if (confidenceComparisonChart) {
-                confidenceComparisonChart.destroy();
-            }
-            const ctx = document.getElementById('confidence-comparison-chart').getContext('2d');
-
-            confidenceComparisonChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: comparisonData.sample_indices.map(i => `Sample ${i}`),
-                    datasets: [
-                        {
-                            label: 'Standard Model Confidence (Correct Class)',
-                            data: comparisonData.standard_confidences,
-                            backgroundColor: 'rgba(207, 102, 121, 0.7)',
-                            borderColor: '#CF6679',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Robust Model Confidence (Correct Class)',
-                            data: comparisonData.robust_confidences,
-                            backgroundColor: 'rgba(3, 218, 198, 0.7)',
-                            borderColor: '#03DAC6',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Confidence Comparison on Adversarial Examples'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 1,
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Update comparison table
-        function updateComparisonTable(comparisonData) {
-            document.getElementById('clean-acc-standard').textContent = `${(comparisonData.standard.clean_accuracy * 100).toFixed(2)}%`;
-            document.getElementById('clean-acc-robust').textContent = `${(comparisonData.robust.clean_accuracy * 100).toFixed(2)}%`;
-
-            const cleanImprovement = comparisonData.robust.clean_accuracy - comparisonData.standard.clean_accuracy;
-            document.getElementById('clean-acc-improvement').textContent = `${(cleanImprovement * 100).toFixed(2)}%`;
-            document.getElementById('clean-acc-improvement').style.color = cleanImprovement >= 0 ? 'var(--success)' : 'var(--danger)';
-
-            document.getElementById('fgsm-acc-standard').textContent = `${(comparisonData.standard.fgsm_accuracy * 100).toFixed(2)}%`;
-            document.getElementById('fgsm-acc-robust').textContent = `${(comparisonData.robust.fgsm_accuracy * 100).toFixed(2)}%`;
-
-            const fgsmImprovement = comparisonData.robust.fgsm_accuracy - comparisonData.standard.fgsm_accuracy;
-            document.getElementById('fgsm-acc-improvement').textContent = `${(fgsmImprovement * 100).toFixed(2)}%`;
-            document.getElementById('fgsm-acc-improvement').style.color = fgsmImprovement >= 0 ? 'var(--success)' : 'var(--danger)';
-
-            document.getElementById('pgd-acc-standard').textContent = `${(comparisonData.standard.pgd_accuracy * 100).toFixed(2)}%`;
-            document.getElementById('pgd-acc-robust').textContent = `${(comparisonData.robust.pgd_accuracy * 100).toFixed(2)}%`;
-
-            const pgdImprovement = comparisonData.robust.pgd_accuracy - comparisonData.standard.pgd_accuracy;
-            document.getElementById('pgd-acc-improvement').textContent = `${(pgdImprovement * 100).toFixed(2)}%`;
-            document.getElementById('pgd-acc-improvement').style.color = pgdImprovement >= 0 ? 'var(--success)' : 'var(--danger)';
-
-            document.getElementById('deepfool-acc-standard').textContent = `${(comparisonData.standard.deepfool_accuracy * 100).toFixed(2)}%`;
-            document.getElementById('deepfool-acc-robust').textContent = `${(comparisonData.robust.deepfool_accuracy * 100).toFixed(2)}%`;
-
-            const deepfoolImprovement = comparisonData.robust.deepfool_accuracy - comparisonData.standard.deepfool_accuracy;
-            document.getElementById('deepfool-acc-improvement').textContent = `${(deepfoolImprovement * 100).toFixed(2)}%`;
-            document.getElementById('deepfool-acc-improvement').style.color = deepfoolImprovement >= 0 ? 'var(--success)' : 'var(--danger)';
-
-            // Calculate and display average improvement
-            const avgImprovement = (cleanImprovement + fgsmImprovement + pgdImprovement + deepfoolImprovement) / 4;
-            document.getElementById('avg-improvement').textContent = `${(avgImprovement * 100).toFixed(2)}%`;
-
-            // Render accuracy comparison chart
-            renderAccuracyComparisonChart(comparisonData);
-        }
-
-        // Render accuracy comparison chart
-        function renderAccuracyComparisonChart(comparisonData) {
-            if (accuracyComparisonChart) {
-                accuracyComparisonChart.destroy();
-            }
-            const ctx = document.getElementById('accuracy-comparison-chart').getContext('2d');
-
-            accuracyComparisonChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Clean Data', 'FGSM Attack', 'PGD Attack', 'DeepFool Attack'],
-                    datasets: [
-                        {
-                            label: 'Standard Model',
-                            data: [
-                                comparisonData.standard.clean_accuracy * 100,
-                                comparisonData.standard.fgsm_accuracy * 100,
-                                comparisonData.standard.pgd_accuracy * 100,
-                                comparisonData.standard.deepfool_accuracy * 100
-                            ],
-                            backgroundColor: 'rgba(207, 102, 121, 0.7)',
-                            borderColor: '#CF6679',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Robust Model',
-                            data: [
-                                comparisonData.robust.clean_accuracy * 100,
-                                comparisonData.robust.fgsm_accuracy * 100,
-                                comparisonData.robust.pgd_accuracy * 100,
-                                comparisonData.robust.deepfool_accuracy * 100
-                            ],
-                            backgroundColor: 'rgba(3, 218, 198, 0.7)',
-                            borderColor: '#03DAC6',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Accuracy Comparison Across Attack Types'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.raw.toFixed(2)}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: 'Accuracy (%)'
-                            },
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.1)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Load initial data on page load
-        window.addEventListener('load', () => {
-            loadSampleData();
-            loadModelInfo();
-
-            // Register the matrix chart type if not already registered
-            if (!Chart.controllers.matrix) {
-                Chart.register({
-                    id: 'matrix',
-                    defaults: {
-                        borderWidth: 1,
-                        borderColor: 'rgba(255, 255, 255, 0.1)',
-                        width: 1,
-                        height: 1,
-                        dataElementType: 'rectangle'
-                    },
-                    controllers: {
-                        matrix: {
-                            dataElementType: 'rectangle',
-
-                            updateElements: function(rectangles, start, count, mode) {
-                                const me = this;
-                                const meta = me.getMeta();
-                                const dataset = me.getDataset();
-                                const data = dataset.data || [];
-                                const xScale = me.getScaleForId(meta.xAxisID);
-                                const yScale = me.getScaleForId(meta.yAxisID);
-
-                                for (let i = start; i < start + count; i++) {
-                                    const item = data[i];
-                                    const x = xScale.getPixelForValue(item.x, i);
-                                    const y = yScale.getPixelForValue(item.y, i);
-                                    const width = dataset.width || 1;
-                                    const height = dataset.height || 1;
-
-                                    rectangles[i].x = x - width / 2;
-                                    rectangles[i].y = y - height / 2;
-                                    rectangles[i].width = width;
-                                    rectangles[i].height = height;
-                                    rectangles[i].backgroundColor = me.getDatasetMeta().controller.getBackgroundColor(item, i);
-                                    rectangles[i].borderColor = me.getDatasetMeta().controller.getBorderColor(item, i);
-                                    rectangles[i].borderWidth = dataset.borderWidth;
-                                    rectangles[i].options = Object.assign({}, dataset);
-                                }
-                            },
-
-                            draw: function() {
-                                const me = this;
-                                const meta = me.getMeta();
-                                const data = me.getDataset().data || [];
-                                const elements = meta.data || [];
-
-                                for (let i = 0; i < elements.length; i++) {
-                                    const rectangle = elements[i];
-                                    const context = me.getContext();
-                                    const options = rectangle.options;
-
-                                    context.beginPath();
-                                    context.rect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-                                    context.fillStyle = rectangle.backgroundColor;
-                                    context.fill();
-
-                                    if (options.borderWidth > 0) {
-                                        context.strokeStyle = rectangle.borderColor;
-                                        context.lineWidth = options.borderWidth;
-                                        context.stroke();
-                                    }
-
-                                    // Add text
-                                    const item = data[i];
-                                    if (item.v !== undefined) {
-                                        context.fillStyle = '#fff';
-                                        context.textAlign = 'center';
-                                        context.textBaseline = 'middle';
-                                        context.font = '12px Arial';
-                                        context.fillText(item.v, rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-                                    }
-                                }
-                            },
-
-                            getBackgroundColor: function(item, index) {
-                                const dataset = this.getDataset();
-                                const options = this.chart.options;
-
-                                if (typeof dataset.backgroundColor === 'function') {
-                                    return dataset.backgroundColor({
-                                        chart: this.chart,
-                                        dataIndex: index,
-                                        dataset: dataset,
-                                        datasetIndex: this.index
-                                    });
-                                }
-
-                                return dataset.backgroundColor;
-                            },
-
-                            getBorderColor: function(item, index) {
-                                const dataset = this.getDataset();
-                                const options = this.chart.options;
-
-                                if (typeof dataset.borderColor === 'function') {
-                                    return dataset.borderColor({
-                                        chart: this.chart,
-                                        dataIndex: index,
-                                        dataset: dataset,
-                                        datasetIndex: this.index
-                                    });
-                                }
-
-                                return dataset.borderColor;
-                            }
-                        }
-                    }
-                });
-            }
-        });
-
-        // Inference functionality
-        document.getElementById('run-inference-btn').addEventListener('click', function() {
-            fetch('/run_inference', {
+            fetch('/run_attack', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({}), // No input data needed from frontend
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ attack_type: attackType, epsilon: parseFloat(epsilon) })
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('inference-results').style.display = 'block';
-
-                // Display original sample
-                document.getElementById('original-inference-sample').textContent = data.original_sample_raw;
-
-                // Standard Model Results
-                const standardPredEl = document.getElementById('standard-inference-prediction');
-                const standardConfEl = document.getElementById('standard-inference-confidence');
-                standardPredEl.textContent = `Predicted: ${data.standard_prediction}`;
-                standardPredEl.className = `result-badge ${data.standard_prediction === 'normal' ? 'success' : 'danger'}`;
-                standardConfEl.textContent = `Confidence: ${(data.standard_confidence * 100).toFixed(2)}%`;
-
-                // Robust Model Results
-                const robustPredEl = document.getElementById('robust-inference-prediction');
-                const robustConfEl = document.getElementById('robust-inference-confidence');
-                robustPredEl.textContent = `Predicted: ${data.robust_prediction}`;
-                robustPredEl.className = `result-badge ${data.robust_prediction === 'normal' ? 'success' : 'danger'}`;
-                robustConfEl.textContent = `Confidence: ${(data.robust_confidence * 100).toFixed(2)}%`;
-            })
-            .catch(error => {
-                console.error('Error running inference:', error);
-                alert('Error running inference. Please check console for details.');
+                document.getElementById('attack-results').style.display = 'block';
+                document.getElementById('original-sample').textContent = data.original_sample;
+                document.getElementById('adversarial-sample').textContent = data.adversarial_sample;
+                document.getElementById('original-prediction').textContent = `Predicted: ${data.original_prediction}`;
+                document.getElementById('adversarial-prediction').textContent = `Predicted: ${data.adversarial_prediction}`;
+                document.getElementById('original-prediction').className = `result-badge ${data.original_prediction === data.true_label ? 'success' : 'danger'}`;
+                document.getElementById('adversarial-prediction').className = `result-badge ${data.adversarial_prediction === data.true_label ? 'success' : 'danger'}`;
             });
+        });
+
+        document.getElementById('test-robust-btn').addEventListener('click', function() {
+            const attackType = document.getElementById('robust-attack-type').value;
+            const epsilon = document.getElementById('robust-epsilon').value;
+            fetch('/test_robust_model', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ attack_type: attackType, epsilon: parseFloat(epsilon) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('robust-results').style.display = 'block';
+                document.getElementById('standard-model-accuracy').textContent = `${(data.standard.accuracy * 100).toFixed(2)}%`;
+                document.getElementById('robust-model-accuracy').textContent = `${(data.robust.accuracy * 100).toFixed(2)}%`;
+                updateComparisonTable(data.comparison_data);
+                renderAccuracyComparisonChart(data.comparison_data);
+            });
+        });
+
+        function updateComparisonTable(comparisonData) {
+            const tableBody = document.getElementById('comparison-table-body');
+            tableBody.innerHTML = '';
+            const attacks = ['fgsm', 'pgd', 'deepfool'];
+            attacks.forEach(attack => {
+                const standardAcc = comparisonData.standard[`${attack}_accuracy`] || 0;
+                const robustAcc = comparisonData.robust[`${attack}_accuracy`] || 0;
+                const epsilon = comparisonData.standard[`${attack}_epsilon`] || 'N/A';
+                const row = `
+                    <tr>
+                        <td>${attack.toUpperCase()} Accuracy (ε=${epsilon})</td>
+                        <td>${(standardAcc * 100).toFixed(2)}%</td>
+                        <td>${(robustAcc * 100).toFixed(2)}%</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function renderAccuracyComparisonChart(comparisonData) {
+            if (accuracyComparisonChart) accuracyComparisonChart.destroy();
+            const ctx = document.getElementById('accuracy-comparison-chart').getContext('2d');
+            const attacks = ['fgsm', 'pgd', 'deepfool'];
+            accuracyComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: attacks.map(a => a.toUpperCase()),
+                    datasets: [
+                        {
+                            label: 'Standard Model',
+                            data: attacks.map(a => (comparisonData.standard[`${a}_accuracy`] || 0) * 100),
+                            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+                        },
+                        {
+                            label: 'Robust Model',
+                            data: attacks.map(a => (comparisonData.robust[`${a}_accuracy`] || 0) * 100),
+                            backgroundColor: 'rgba(46, 204, 113, 0.7)',
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Accuracy (%)' } }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('run-inference-btn').addEventListener('click', function() {
+            fetch('/run_inference', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('inference-results').style.display = 'block';
+                document.getElementById('original-inference-sample').textContent = data.original_sample_raw;
+                document.getElementById('standard-inference-prediction').textContent = `Predicted: ${data.standard_prediction}`;
+                document.getElementById('standard-inference-confidence').textContent = `Confidence: ${(data.standard_confidence * 100).toFixed(2)}%`;
+                document.getElementById('robust-inference-prediction').textContent = `Predicted: ${data.robust_prediction}`;
+                document.getElementById('robust-inference-confidence').textContent = `Confidence: ${(data.robust_confidence * 100).toFixed(2)}%`;
+                document.getElementById('standard-inference-prediction').className = `result-badge ${data.standard_prediction === 'normal' ? 'success' : 'danger'}`;
+                document.getElementById('robust-inference-prediction').className = `result-badge ${data.robust_prediction === 'normal' ? 'success' : 'danger'}`;
+            });
+        });
+
+        window.addEventListener('load', () => {
+            loadSampleData();
+            loadModelInfo();
         });
     </script>
 </body>
