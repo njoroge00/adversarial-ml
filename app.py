@@ -1256,7 +1256,7 @@ def robustness_check():
         'standard_confidence_on_adv': standard_confidence_on_adv,
         'robust_confidence_on_adv': robust_confidence_on_adv,
         'confidence_comparison': confidence_comparison_data,
-        'comparison_data': comparison_data
+        'comparison_data': models['comparison_metrics'] # Return the full comparison_metrics
     })
 
 # Keep the evaluate_attack_robustness_full function as defined previously.

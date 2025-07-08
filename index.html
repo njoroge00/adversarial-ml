@@ -281,6 +281,7 @@
             border-radius: var(--border-radius);
             padding: 16px;
             margin-top: 16px;
+            margin-bottom: 16px;
         }
 
         .result-header {
@@ -409,9 +410,17 @@
             background-color: var(--bg-tertiary);
             padding: 16px;
             border-radius: var(--border-radius);
-            overflow-x: auto;
+            overflow-wrap: break-word; /* Ensures long words break and wrap */
+            word-wrap: break-word; /* Legacy support for word-wrap */
+            white-space: pre-wrap; /* Preserves whitespace but wraps text */
             font-size: 0.9rem;
             margin-top: 8px;
+        }
+
+        #attack-results, #robust-results, #inference-results {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--bg-tertiary);
         }
 
         .attack-stats {
@@ -426,6 +435,7 @@
             border-radius: var(--border-radius);
             padding: 16px;
             text-align: center;
+            margin-bottom: 16px;
         }
 
         .stat-value {
@@ -938,6 +948,12 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
     </footer>
 
     <script>
+        let featureImportanceChart = null;
+        let confusionMatrixChart = null;
+        let perturbationChart = null;
+        let confidenceComparisonChart = null;
+        let accuracyComparisonChart = null;
+
         // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
         const htmlElement = document.documentElement;
@@ -1126,6 +1142,9 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
         // Render feature importance chart
         function renderFeatureImportanceChart(featureImportance) {
+            if (featureImportanceChart) {
+                featureImportanceChart.destroy();
+            }
             const ctx = document.getElementById('feature-importance-chart').getContext('2d');
 
             // Sort feature importance and get top 10
@@ -1136,7 +1155,7 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
             const labels = sortedFeatures.map(f => f[0]);
             const values = sortedFeatures.map(f => f[1]);
 
-            new Chart(ctx, {
+            featureImportanceChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -1182,6 +1201,9 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
         // Render confusion matrix
         function renderConfusionMatrix(confusionMatrix) {
+            if (confusionMatrixChart) {
+                confusionMatrixChart.destroy();
+            }
             const ctx = document.getElementById('confusion-matrix-chart').getContext('2d');
 
             const data = {
@@ -1207,7 +1229,7 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                 }]
             };
 
-            new Chart(ctx, {
+            confusionMatrixChart = new Chart(ctx, {
                 type: 'matrix',
                 data: {
                     datasets: [{
@@ -1350,13 +1372,11 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
             }, 100);
         });
 
-        // Format sample for display
-        // function formatSample(sample) {
-        //     return sample.replace(/,/g, ', ');
-        // }
-
         // Render perturbation chart
         function renderPerturbationChart(originalFeatures, adversarialFeatures) {
+            if (perturbationChart) {
+                perturbationChart.destroy();
+            }
             const ctx = document.getElementById('perturbation-chart').getContext('2d');
 
             // Calculate absolute differences
@@ -1382,7 +1402,7 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                 adversarialValues.push(adversarialFeatures[index]);
             }
 
-            new Chart(ctx, {
+            perturbationChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -1496,8 +1516,7 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                         document.getElementById('robust-adv-prediction').textContent = `Predicted: ${data.robust_prediction_on_adv} (${(data.robust_confidence_on_adv * 100).toFixed(1)}% confidence)`;
                         document.getElementById('robust-adv-prediction').className = data.robust_prediction_on_adv === data.true_label ? 'result-badge success' : 'result-badge danger';
 
-                        // Update comparison page
-                    // Render confidence comparison chart
+                        // Render confidence comparison chart
                         renderConfidenceComparisonChart(data.confidence_comparison);
 
                         // Show results
@@ -1520,9 +1539,12 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
         // Render confidence comparison chart
         function renderConfidenceComparisonChart(comparisonData) {
+            if (confidenceComparisonChart) {
+                confidenceComparisonChart.destroy();
+            }
             const ctx = document.getElementById('confidence-comparison-chart').getContext('2d');
 
-            new Chart(ctx, {
+            confidenceComparisonChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: comparisonData.sample_indices.map(i => `Sample ${i}`),
@@ -1609,9 +1631,12 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
 
         // Render accuracy comparison chart
         function renderAccuracyComparisonChart(comparisonData) {
+            if (accuracyComparisonChart) {
+                accuracyComparisonChart.destroy();
+            }
             const ctx = document.getElementById('accuracy-comparison-chart').getContext('2d');
 
-            new Chart(ctx, {
+            accuracyComparisonChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Clean Data', 'FGSM Attack', 'PGD Attack', 'DeepFool Attack'],
@@ -1831,7 +1856,6 @@ Dst Host Rerror Rate, Dst Host Srv Rerror Rate
                 alert('Error running inference. Please check console for details.');
             });
         });
-    </script>
     </script>
 </body>
 </html>
