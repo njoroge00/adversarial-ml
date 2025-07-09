@@ -406,6 +406,10 @@
                     <p>This web application demonstrates how adversarial attacks can bypass Network Intrusion Detection Systems (IDS) and how robust models can defend against these attacks.</p>
                     <h3>Sample Data Records</h3>
                     <div class="data-display" id="sample-data">Loading sample data...</div>
+
+                    <h3 style="margin-top: 24px;">Sample Features</h3>
+                    <p>Features of a randomly selected sample from the dataset:</p>
+                    <div class="data-display" id="sample-features-display">Loading sample features...</div>
                 </div>
             </div>
 
@@ -440,13 +444,7 @@
                     </div>
 
                     <h3>Confusion Matrix</h3>
-                    <div class="chart-container">
-                        <canvas id="confusion-matrix-chart"></canvas>
-                    </div>
-
-                    <h3>Sample Features</h3>
-                    <p>Features of a randomly selected sample from the dataset:</p>
-                    <div class="data-display" id="sample-features-display">Loading sample features...</div>
+                    <div id="confusion-matrix-chart"></div>
                 </div>
             </div>
 
@@ -608,7 +606,6 @@
 
     <script>
         let featureImportanceChart = null;
-        let confusionMatrixChart = null;
         let accuracyComparisonChart = null;
 
         // Theme toggle functionality
@@ -716,57 +713,30 @@
         }
 
         function renderConfusionMatrix(confusionMatrix) {
-            if (confusionMatrixChart) confusionMatrixChart.destroy();
-            const ctx = document.getElementById('confusion-matrix-chart').getContext('2d');
-            const data = {
-                labels: ['Normal', 'Intrusion'],
-                datasets: [{
-                    label: 'Confusion Matrix',
-                    data: [
-                        {x: 'Predicted Normal', y: 'Actual Normal', v: confusionMatrix[0][0]},
-                        {x: 'Predicted Intrusion', y: 'Actual Normal', v: confusionMatrix[0][1]},
-                        {x: 'Predicted Normal', y: 'Actual Intrusion', v: confusionMatrix[1][0]},
-                        {x: 'Predicted Intrusion', y: 'Actual Intrusion', v: confusionMatrix[1][1]}
-                    ],
-                    backgroundColor: function(context) {
-                        const value = context.dataset.data[context.dataIndex].v;
-                        const max = Math.max(...confusionMatrix.flat());
-                        const opacity = 0.3 + 0.7 * (value / max);
-                        if (context.dataIndex === 0) return `rgba(46, 204, 113, ${opacity})`; // TN (Green)
-                        if (context.dataIndex === 1) return `rgba(241, 196, 15, ${opacity})`; // FP (Yellow)
-                        if (context.dataIndex === 2) return `rgba(231, 76, 60, ${opacity})`; // FN (Red)
-                        if (context.dataIndex === 3) return `rgba(52, 152, 219, ${opacity})`; // TP (Blue)
-                    }
-                }]
-            };
-            // Custom chart type for matrix
-            Chart.register({
-                id: 'matrix',
-                defaults: {},
-                controllers: {
-                    matrix: Chart.controllers.bar
-                }
-            });
-            confusionMatrixChart = new Chart(ctx, {
-                type: 'matrix',
-                data: data,
-                options: {
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const item = context.dataset.data[context.dataIndex];
-                                    return `${item.y}, ${item.x}: ${item.v}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { title: { display: true, text: 'Predicted' } },
-                        y: { title: { display: true, text: 'Actual' } }
-                    }
-                }
-            });
+            const confusionMatrixContainer = document.getElementById('confusion-matrix-chart').parentNode;
+            confusionMatrixContainer.innerHTML = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Predicted Normal</th>
+                            <th>Predicted Intrusion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Actual Normal</strong></td>
+                            <td>${confusionMatrix[0][0]}</td>
+                            <td>${confusionMatrix[0][1]}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Actual Intrusion</strong></td>
+                            <td>${confusionMatrix[1][0]}</td>
+                            <td>${confusionMatrix[1][1]}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
         }
 
         function displaySampleFeatures(features, featureNames) {

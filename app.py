@@ -306,6 +306,12 @@ def evaluate_attack_robustness_full(model, X_data, y_data, attack_type, epsilon,
     
     return {'attack_type': attack_type, 'epsilon': epsilon, 'accuracy': float(accuracy)}
 
+def format_sample_data(sample_array, features_per_line=10):
+    formatted_lines = []
+    for i in range(0, len(sample_array), features_per_line):
+        formatted_lines.append(",".join(map(str, sample_array[i:i+features_per_line])))
+    return "\n".join(formatted_lines)
+
 # --- Flask Routes ---
 @app.route('/')
 def index():
@@ -418,9 +424,9 @@ def run_attack():
         original_output = standard_model(X_sample).item()
         adversarial_output = standard_model(X_adv_sample).item()
 
-    original_prediction_label = 'normal' if original_output < 0.5 else 'intrusion'
-    adversarial_prediction_label = 'normal' if adversarial_output < 0.5 else 'intrusion'
-    true_label = 'normal' if y_sample_int == 1 else 'intrusion'
+    original_prediction_label = 'intrusion' if original_output < 0.5 else 'normal'
+    adversarial_prediction_label = 'intrusion' if adversarial_output < 0.5 else 'normal'
+    true_label = 'intrusion' if y_sample_int == 0 else 'normal'
 
     return jsonify({
         'attack_type': attack_type,
@@ -430,8 +436,8 @@ def run_attack():
         'original_prediction': original_prediction_label,
         'adversarial_prediction': adversarial_prediction_label,
         'true_label': true_label,
-        'original_sample': ",".join(map(str, X_sample.cpu().numpy().flatten().round(4))),
-        'adversarial_sample': ",".join(map(str, X_adv_sample.cpu().numpy().flatten().round(4))),
+        'original_sample': format_sample_data(X_sample.cpu().numpy().flatten().round(4)),
+        'adversarial_sample': format_sample_data(X_adv_sample.cpu().numpy().flatten().round(4)),
     })
 
 @app.route('/test_robust_model', methods=['POST'])
@@ -496,10 +502,10 @@ def robustness_check():
             adversarial_standard_output = models['standard'](X_adv_sample_temp).item()
             adversarial_robust_output = models['robust'](X_adv_sample_temp).item()
 
-        original_standard_pred_label = 'normal' if original_standard_output > 0.5 else 'intrusion'
-        adversarial_standard_pred_label = 'normal' if adversarial_standard_output > 0.5 else 'intrusion'
-        adversarial_robust_pred_label = 'normal' if adversarial_robust_output > 0.5 else 'intrusion'
-        true_label_str = 'normal' if temp_y_sample_int == 1 else 'intrusion'
+        original_standard_pred_label = 'intrusion' if original_standard_output < 0.5 else 'normal'
+        adversarial_standard_pred_label = 'intrusion' if adversarial_standard_output < 0.5 else 'normal'
+        adversarial_robust_pred_label = 'intrusion' if adversarial_robust_output < 0.5 else 'normal'
+        true_label_str = 'intrusion' if temp_y_sample_int == 0 else 'normal'
 
         # Condition: standard model predicts intrusion on original, normal on adversarial
         # AND robust model predicts intrusion on adversarial
@@ -507,8 +513,8 @@ def robustness_check():
             adversarial_standard_pred_label == 'normal' and 
             adversarial_robust_pred_label == 'intrusion'):
             
-            robust_example['original_sample'] = ",".join(map(str, temp_X_sample.cpu().numpy().flatten().round(4)))
-            robust_example['adversarial_sample'] = ",".join(map(str, X_adv_sample_temp.cpu().numpy().flatten().round(4)))
+            robust_example['original_sample'] = format_sample_data(temp_X_sample.cpu().numpy().flatten().round(4))
+            robust_example['adversarial_sample'] = format_sample_data(X_adv_sample_temp.cpu().numpy().flatten().round(4))
             robust_example['original_prediction'] = original_standard_pred_label
             robust_example['adversarial_standard_prediction'] = adversarial_standard_pred_label
             robust_example['adversarial_robust_prediction'] = adversarial_robust_pred_label
@@ -534,11 +540,11 @@ def run_inference():
         standard_output = models['standard'](sample_tensor).item()
         robust_output = models['robust'](sample_tensor).item()
 
-    standard_prediction = 'normal' if standard_output < 0.5 else 'intrusion'
-    robust_prediction = 'normal' if robust_output < 0.5 else 'intrusion'
+    standard_prediction = 'intrusion' if standard_output < 0.5 else 'normal'
+    robust_prediction = 'intrusion' if robust_output < 0.5 else 'normal'
 
     return jsonify({
-        'original_sample_raw': ",".join(map(str, sample_tensor.cpu().numpy().flatten().round(4))),
+        'original_sample_raw': format_sample_data(sample_tensor.cpu().numpy().flatten().round(4)),
         'standard_prediction': standard_prediction,
         'standard_confidence': standard_output,
         'robust_prediction': robust_prediction,
