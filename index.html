@@ -672,7 +672,8 @@
                     const sampleDataEl = document.getElementById('sample-data');
                     let sampleHtml = '';
                     data.samples.forEach((sample, index) => {
-                        sampleHtml += `<div>${index + 1}. ${sample}</div>`;
+                        const breakableSample = sample.replace(/,/g, ',<wbr>');
+                        sampleHtml += `<div>${index + 1}. ${breakableSample}</div>`;
                     });
                     sampleDataEl.innerHTML = sampleHtml;
                 });
