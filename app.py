@@ -323,6 +323,10 @@ def get_model_info():
     if not models or not data:
         initialize()
     metrics = models.get('standard_metrics', {})
+    # Get a random sample and its features
+    idx = np.random.randint(0, len(data['X_test']))
+    random_sample_features = data['X_test'][idx:idx+1].cpu().numpy().flatten().round(4).tolist()
+    
     return jsonify({
         'accuracy': metrics.get('accuracy'),
         'precision': metrics.get('precision'),
@@ -330,6 +334,8 @@ def get_model_info():
         'f1': metrics.get('f1'),
         'feature_importance': models.get('feature_importance'),
         'confusion_matrix': metrics.get('confusion_matrix'),
+        'sample_features': random_sample_features,
+        'feature_names': data.get('feature_names')
     })
 
 @app.route('/run_attack', methods=['POST'])
@@ -353,13 +359,51 @@ def run_attack():
     with torch.no_grad():
         y_pred_clean = (standard_model(X_test).cpu().numpy().flatten() > 0.5).astype(int)
     
-    correct_indices = np.where(y_pred_clean == y_test_int)[0]
-    if len(correct_indices) == 0:
-        return jsonify({'error': 'No correctly classified examples to attack.'}), 400
+    # Find a sample that is predicted as intrusion on the original sample and misclassified as normal on the adversarial sample
+    X_sample = None
+    y_sample = None
+    y_sample_int = None
+    max_attempts = 100  # Limit attempts to find a suitable sample
+
+    for _ in range(max_attempts):
+        idx = np.random.randint(0, len(X_test))
+        temp_X_sample, temp_y_sample = X_test[idx:idx+1], y_test[idx:idx+1]
+        temp_y_sample_int = y_test_int[idx]
+
+        # Only consider samples that are truly 'intrusion' (label 0)
+        if temp_y_sample_int == 1: # 1 means normal, 0 means intrusion
+            continue
+
+        with torch.no_grad():
+            original_output_temp = standard_model(temp_X_sample).item()
+        
+        # Check if original sample is predicted as intrusion (output > 0.5 for normal, so < 0.5 for intrusion)
+        if original_output_temp < 0.5: # Predicted as intrusion
+            # Generate adversarial sample
+            if attack_type == 'fgsm':
+                X_adv_sample_temp = fgsm_attack(standard_model, temp_X_sample, temp_y_sample, epsilon)
+            elif attack_type == 'pgd':
+                X_adv_sample_temp = pgd_attack(standard_model, temp_X_sample, temp_y_sample, epsilon, alpha, num_iter)
+            elif attack_type == 'deepfool':
+                X_adv_sample_temp = deepfool_attack(standard_model, temp_X_sample, temp_y_sample, max_iter=num_iter, epsilon=epsilon)
+            else:
+                continue # Should not happen with valid attack_type
+
+            with torch.no_grad():
+                adversarial_output_temp = standard_model(X_adv_sample_temp).item()
+            
+            # Check if adversarial sample is misclassified as normal (output > 0.5 for normal)
+            if adversarial_output_temp > 0.5: # Misclassified as normal
+                X_sample = temp_X_sample
+                y_sample = temp_y_sample
+                y_sample_int = temp_y_sample_int
+                X_adv_sample = X_adv_sample_temp
+                original_output = original_output_temp
+                adversarial_output = adversarial_output_temp
+                break
     
-    idx = np.random.choice(correct_indices)
-    X_sample, y_sample = X_test[idx:idx+1], y_test[idx:idx+1]
-    y_sample_int = y_test_int[idx]
+    if X_sample is None:
+        return jsonify({'error': 'Could not find a suitable sample for this attack (intrusion -> normal misclassification). Try different parameters or attack type.'}), 400
 
     if attack_type == 'fgsm':
         X_adv_sample = fgsm_attack(standard_model, X_sample, y_sample, epsilon)
@@ -417,10 +461,65 @@ def robustness_check():
     models['comparison_metrics']['standard'][f'{attack_type}_epsilon'] = epsilon
     models['comparison_metrics']['robust'][f'{attack_type}_epsilon'] = epsilon
 
+    # Find a specific adversarial sample that fools the standard model but not the robust model
+    robust_example = {
+        'original_sample': None,
+        'adversarial_sample': None,
+        'original_prediction': None,
+        'adversarial_standard_prediction': None,
+        'adversarial_robust_prediction': None,
+        'true_label': None
+    }
+    
+    max_robust_attempts = 100
+    for _ in range(max_robust_attempts):
+        idx = np.random.randint(0, len(X_test))
+        temp_X_sample, temp_y_sample = X_test[idx:idx+1], y_test[idx:idx+1]
+        temp_y_sample_int = y_test.cpu().numpy().astype(int)[idx]
+
+        # We are looking for an intrusion sample (true label 0)
+        if temp_y_sample_int == 1: # 1 means normal, 0 means intrusion
+            continue
+
+        # Generate adversarial sample for standard model
+        if attack_type == 'fgsm':
+            X_adv_sample_temp = fgsm_attack(models['standard'], temp_X_sample, temp_y_sample, epsilon)
+        elif attack_type == 'pgd':
+            X_adv_sample_temp = pgd_attack(models['standard'], temp_X_sample, temp_y_sample, epsilon, alpha, num_iter)
+        elif attack_type == 'deepfool':
+            X_adv_sample_temp = deepfool_attack(models['standard'], temp_X_sample, temp_y_sample, max_iter=num_iter, epsilon=epsilon)
+        else:
+            continue
+
+        with torch.no_grad():
+            original_standard_output = models['standard'](temp_X_sample).item()
+            adversarial_standard_output = models['standard'](X_adv_sample_temp).item()
+            adversarial_robust_output = models['robust'](X_adv_sample_temp).item()
+
+        original_standard_pred_label = 'normal' if original_standard_output > 0.5 else 'intrusion'
+        adversarial_standard_pred_label = 'normal' if adversarial_standard_output > 0.5 else 'intrusion'
+        adversarial_robust_pred_label = 'normal' if adversarial_robust_output > 0.5 else 'intrusion'
+        true_label_str = 'normal' if temp_y_sample_int == 1 else 'intrusion'
+
+        # Condition: standard model predicts intrusion on original, normal on adversarial
+        # AND robust model predicts intrusion on adversarial
+        if (original_standard_pred_label == 'intrusion' and 
+            adversarial_standard_pred_label == 'normal' and 
+            adversarial_robust_pred_label == 'intrusion'):
+            
+            robust_example['original_sample'] = ",".join(map(str, temp_X_sample.cpu().numpy().flatten().round(4)))
+            robust_example['adversarial_sample'] = ",".join(map(str, X_adv_sample_temp.cpu().numpy().flatten().round(4)))
+            robust_example['original_prediction'] = original_standard_pred_label
+            robust_example['adversarial_standard_prediction'] = adversarial_standard_pred_label
+            robust_example['adversarial_robust_prediction'] = adversarial_robust_pred_label
+            robust_example['true_label'] = true_label_str
+            break
+
     return jsonify({
         'standard': standard_results,
         'robust': robust_results,
-        'comparison_data': models['comparison_metrics']
+        'comparison_data': models['comparison_metrics'],
+        'robust_example': robust_example
     })
 
 @app.route('/run_inference', methods=['POST'])

@@ -443,6 +443,10 @@
                     <div class="chart-container">
                         <canvas id="confusion-matrix-chart"></canvas>
                     </div>
+
+                    <h3>Sample Features</h3>
+                    <p>Features of a randomly selected sample from the dataset:</p>
+                    <div class="data-display" id="sample-features-display">Loading sample features...</div>
                 </div>
             </div>
 
@@ -469,20 +473,21 @@
                     <button id="run-attack-btn">Generate Adversarial Examples</button>
 
                     <div id="attack-results" style="display: none;">
-                        <h3>Attack Results</h3>
-                        <div class="side-by-side">
-                            <div>
-                                <h4>Original Sample (Correctly Classified)</h4>
-                                <div id="original-sample" class="packet-display"></div>
-                                <div id="original-prediction" class="result-badge success"></div>
-                            </div>
-                            <div>
-                                <h4>Adversarial Sample (Misclassified)</h4>
-                                <div id="adversarial-sample" class="packet-display"></div>
-                                <div id="adversarial-prediction" class="result-badge danger"></div>
+                            <h3>Attack Results</h3>
+                            <p>Below is an example where the original sample was predicted as <strong>Intrusion</strong>, but the adversarial sample was misclassified as <strong>Normal</strong> by the standard model.</p>
+                            <div class="side-by-side">
+                                <div>
+                                    <h4>Original Sample (Predicted: <span id="original-attack-prediction-label"></span>)</h4>
+                                    <div id="original-sample" class="packet-display"></div>
+                                    <div id="original-attack-prediction" class="result-badge"></div>
+                                </div>
+                                <div>
+                                    <h4>Adversarial Sample (Predicted: <span id="adversarial-attack-prediction-label"></span>)</h4>
+                                    <div id="adversarial-sample" class="packet-display"></div>
+                                    <div id="adversarial-attack-prediction" class="result-badge"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                 </div>
             </div>
 
@@ -518,6 +523,22 @@
                             <div class="stat-card">
                                 <div class="stat-value" id="robust-model-accuracy">--</div>
                                 <div class="stat-label">Robust Model Accuracy Under Attack</div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin-top: 24px;">Robustness Example: Standard Model Fooled, Robust Model Not</h3>
+                        <p>Below is an example where the standard model was fooled by an adversarial sample (misclassified as <strong>Normal</strong>), but the robust model correctly classified it as <strong>Intrusion</strong>.</p>
+                        <div class="side-by-side">
+                            <div>
+                                <h4>Original Sample (True Label: <span id="robust-example-true-label"></span>)</h4>
+                                <div id="robust-example-original-sample" class="packet-display"></div>
+                                <div id="robust-example-original-prediction" class="result-badge"></div>
+                            </div>
+                            <div>
+                                <h4>Adversarial Sample</h4>
+                                <div id="robust-example-adversarial-sample" class="packet-display"></div>
+                                <p>Standard Model Predicted: <span id="robust-example-standard-pred" class="result-badge"></span></p>
+                                <p>Robust Model Predicted: <span id="robust-example-robust-pred" class="result-badge"></span></p>
                             </div>
                         </div>
                     </div>
@@ -670,6 +691,7 @@
                     document.getElementById('f1').textContent = (data.f1 * 100).toFixed(2) + '%';
                     renderFeatureImportanceChart(data.feature_importance);
                     renderConfusionMatrix(data.confusion_matrix);
+                    displaySampleFeatures(data.sample_features, data.feature_names);
                 });
         }
 
@@ -747,6 +769,21 @@
             });
         }
 
+        function displaySampleFeatures(features, featureNames) {
+            const sampleFeaturesDisplay = document.getElementById('sample-features-display');
+            let html = '';
+            if (features && featureNames && features.length === featureNames.length) {
+                html += '<table>';
+                for (let i = 0; i < features.length; i++) {
+                    html += `<tr><td><strong>${featureNames[i]}</strong></td><td>${features[i]}</td></tr>`;
+                }
+                html += '</table>';
+            } else {
+                html = 'Could not load sample features.';
+            }
+            sampleFeaturesDisplay.innerHTML = html;
+        }
+
         document.getElementById('run-attack-btn').addEventListener('click', function() {
             const attackType = document.getElementById('attack-type').value;
             const epsilon = document.getElementById('epsilon').value;
@@ -760,10 +797,17 @@
                 document.getElementById('attack-results').style.display = 'block';
                 document.getElementById('original-sample').textContent = data.original_sample;
                 document.getElementById('adversarial-sample').textContent = data.adversarial_sample;
-                document.getElementById('original-prediction').textContent = `Predicted: ${data.original_prediction}`;
-                document.getElementById('adversarial-prediction').textContent = `Predicted: ${data.adversarial_prediction}`;
-                document.getElementById('original-prediction').className = `result-badge ${data.original_prediction === data.true_label ? 'success' : 'danger'}`;
-                document.getElementById('adversarial-prediction').className = `result-badge ${data.adversarial_prediction === data.true_label ? 'success' : 'danger'}`;
+                
+                document.getElementById('original-attack-prediction-label').textContent = data.original_prediction;
+                document.getElementById('adversarial-attack-prediction-label').textContent = data.adversarial_prediction;
+
+                const originalPredictionBadge = document.getElementById('original-attack-prediction');
+                originalPredictionBadge.textContent = `Confidence: ${(data.original_confidence * 100).toFixed(2)}%`;
+                originalPredictionBadge.className = `result-badge ${data.original_prediction === data.true_label ? 'success' : 'danger'}`;
+
+                const adversarialPredictionBadge = document.getElementById('adversarial-attack-prediction');
+                adversarialPredictionBadge.textContent = `Confidence: ${(data.adversarial_confidence * 100).toFixed(2)}%`;
+                adversarialPredictionBadge.className = `result-badge ${data.adversarial_prediction === data.true_label ? 'success' : 'danger'}`;
             });
         });
 
@@ -782,6 +826,33 @@
                 document.getElementById('robust-model-accuracy').textContent = `${(data.robust.accuracy * 100).toFixed(2)}%`;
                 updateComparisonTable(data.comparison_data);
                 renderAccuracyComparisonChart(data.comparison_data);
+
+                // Populate robust example
+                if (data.robust_example && data.robust_example.original_sample) {
+                    document.getElementById('robust-example-true-label').textContent = data.robust_example.true_label;
+                    document.getElementById('robust-example-original-sample').textContent = data.robust_example.original_sample;
+                    document.getElementById('robust-example-adversarial-sample').textContent = data.robust_example.adversarial_sample;
+
+                    const originalPredBadge = document.getElementById('robust-example-original-prediction');
+                    originalPredBadge.textContent = `Predicted: ${data.robust_example.original_prediction}`;
+                    originalPredBadge.className = `result-badge ${data.robust_example.original_prediction === data.robust_example.true_label ? 'success' : 'danger'}`;
+
+                    const standardAdvPredBadge = document.getElementById('robust-example-standard-pred');
+                    standardAdvPredBadge.textContent = data.robust_example.adversarial_standard_prediction;
+                    standardAdvPredBadge.className = `result-badge ${data.robust_example.adversarial_standard_prediction === data.robust_example.true_label ? 'success' : 'danger'}`;
+
+                    const robustAdvPredBadge = document.getElementById('robust-example-robust-pred');
+                    robustAdvPredBadge.textContent = data.robust_example.adversarial_robust_prediction;
+                    robustAdvPredBadge.className = `result-badge ${data.robust_example.adversarial_robust_prediction === data.robust_example.true_label ? 'success' : 'danger'}`;
+                } else {
+                    // Handle case where no suitable robust example was found
+                    document.getElementById('robust-example-true-label').textContent = 'N/A';
+                    document.getElementById('robust-example-original-sample').textContent = 'No suitable example found for this attack type and parameters.';
+                    document.getElementById('robust-example-adversarial-sample').textContent = 'N/A';
+                    document.getElementById('robust-example-original-prediction').textContent = 'N/A';
+                    document.getElementById('robust-example-standard-pred').textContent = 'N/A';
+                    document.getElementById('robust-example-robust-pred').textContent = 'N/A';
+                }
             });
         });
 
