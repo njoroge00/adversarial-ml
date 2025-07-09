@@ -732,9 +732,9 @@
             const sampleFeaturesDisplay = document.getElementById('sample-features-display');
             let html = '';
             if (features && featureNames && features.length === featureNames.length) {
-                html += '<table>';
+                html += '<table style="table-layout: fixed; width: 100%;">';
                 for (let i = 0; i < features.length; i++) {
-                    html += `<tr><td><strong>${featureNames[i]}</strong></td><td>${features[i]}</td></tr>`;
+                    html += `<tr><td style="width: 50%; word-wrap: break-word;"><strong>${featureNames[i]}</strong></td><td style="word-wrap: break-word;">${features[i]}</td></tr>`;
                 }
                 html += '</table>';
             } else {
