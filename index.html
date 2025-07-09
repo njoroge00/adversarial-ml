@@ -287,12 +287,12 @@
             font-family: 'Roboto Mono', monospace;
             font-size: 0.9rem;
             overflow-x: auto;
-            white-space: pre-wrap; /* Changed from pre to pre-wrap */
-            word-wrap: break-word; /* Added for better wrapping */
-            padding: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
             background-color: var(--bg-primary);
             border-radius: 4px;
             border: 1px solid var(--bg-tertiary);
+            padding: 16px;
         }
 
         .chart-container {
@@ -713,30 +713,19 @@
         }
 
         function renderConfusionMatrix(confusionMatrix) {
-            const confusionMatrixContainer = document.getElementById('confusion-matrix-chart').parentNode;
-            confusionMatrixContainer.innerHTML = `
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Predicted Normal</th>
-                            <th>Predicted Intrusion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Actual Normal</strong></td>
-                            <td>${confusionMatrix[0][0]}</td>
-                            <td>${confusionMatrix[0][1]}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Actual Intrusion</strong></td>
-                            <td>${confusionMatrix[1][0]}</td>
-                            <td>${confusionMatrix[1][1]}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
+            const container = document.getElementById('confusion-matrix-chart');
+            container.innerHTML = ''; // Clear previous content
+            const table = document.createElement('table');
+            table.className = 'comparison-table';
+            
+            let headerHtml = '<thead><tr><th></th><th>Predicted Normal</th><th>Predicted Intrusion</th></tr></thead>';
+            let bodyHtml = '<tbody>';
+            bodyHtml += `<tr><td><strong>Actual Normal</strong></td><td>${confusionMatrix[0][0]}</td><td>${confusionMatrix[0][1]}</td></tr>`;
+            bodyHtml += `<tr><td><strong>Actual Intrusion</strong></td><td>${confusionMatrix[1][0]}</td><td>${confusionMatrix[1][1]}</td></tr>`;
+            bodyHtml += '</tbody>';
+            
+            table.innerHTML = headerHtml + bodyHtml;
+            container.appendChild(table);
         }
 
         function displaySampleFeatures(features, featureNames) {

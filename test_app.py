@@ -6,7 +6,7 @@ import pandas as pd
 from unittest.mock import patch, MagicMock
 
 # Import functions and classes from app.py
-from app import app, data_preprocess, IDSModel, fgsm_attack, pgd_attack, deepfool_attack, initialize, models, data
+from app import app, data_preprocess, IDSModel, fgsm_attack, pgd_attack, deepfool_attack, initialize, models, data, evaluate_models
 
 class TestApp(unittest.TestCase):
 
@@ -82,16 +82,22 @@ class TestApp(unittest.TestCase):
         self.assertFalse(torch.equal(X, X_adv))
 
     def test_model_info_endpoint(self):
+        evaluate_models()  # Ensure metrics are calculated
         response = self.app.get('/model_info')
         self.assertEqual(response.status_code, 200)
-        data = response.get_json()
-        self.assertIn('accuracy', data)
-        self.assertIn('feature_importance', data)
-        self.assertIn('confusion_matrix', data)
-        self.assertIn('sample_features', data)
-        self.assertIn('feature_names', data)
-        self.assertIsInstance(data['sample_features'], list)
-        self.assertIsInstance(data['feature_names'], list)
+        json_data = response.get_json()
+        self.assertIn('accuracy', json_data)
+        self.assertIn('feature_importance', json_data)
+        self.assertIn('confusion_matrix', json_data)
+        self.assertIn('sample_features', json_data)
+        self.assertIn('feature_names', json_data)
+        self.assertIsInstance(json_data['sample_features'], list)
+        self.assertIsInstance(json_data['feature_names'], list)
+        # Verify confusion matrix structure
+        cm = json_data['confusion_matrix']
+        self.assertIsInstance(cm, list)
+        self.assertEqual(len(cm), 2)
+        self.assertTrue(all(isinstance(row, list) and len(row) == 2 for row in cm))
 
     def test_run_attack_endpoint(self):
         # Mock the attack functions to control output for testing specific scenarios
