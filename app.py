@@ -293,8 +293,6 @@ def evaluate_attack_robustness_full(model, X_data, y_data, attack_type, epsilon,
         X_adv = fgsm_attack(model, X_data, y_data, epsilon)
     elif attack_type == 'pgd':
         X_adv = pgd_attack(model, X_data, y_data, epsilon, alpha, num_iter)
-    elif attack_type == 'deepfool':
-        X_adv = deepfool_attack(model, X_data, y_data, max_iter=num_iter, epsilon=epsilon)
     else:
         return {'error': f'Invalid attack type {attack_type}'}
 
@@ -390,8 +388,6 @@ def run_attack():
                 X_adv_sample_temp = fgsm_attack(standard_model, temp_X_sample, temp_y_sample, epsilon)
             elif attack_type == 'pgd':
                 X_adv_sample_temp = pgd_attack(standard_model, temp_X_sample, temp_y_sample, epsilon, alpha, num_iter)
-            elif attack_type == 'deepfool':
-                X_adv_sample_temp = deepfool_attack(standard_model, temp_X_sample, temp_y_sample, max_iter=num_iter, epsilon=epsilon)
             else:
                 continue # Should not happen with valid attack_type
 
@@ -492,8 +488,6 @@ def robustness_check():
             X_adv_sample_temp = fgsm_attack(models['standard'], temp_X_sample, temp_y_sample, epsilon)
         elif attack_type == 'pgd':
             X_adv_sample_temp = pgd_attack(models['standard'], temp_X_sample, temp_y_sample, epsilon, alpha, num_iter)
-        elif attack_type == 'deepfool':
-            X_adv_sample_temp = deepfool_attack(models['standard'], temp_X_sample, temp_y_sample, max_iter=num_iter, epsilon=epsilon)
         else:
             continue
 

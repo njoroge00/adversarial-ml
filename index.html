@@ -458,7 +458,6 @@
                         <select id="attack-type">
                             <option value="fgsm">Fast Gradient Sign Method (FGSM)</option>
                             <option value="pgd">Projected Gradient Descent (PGD)</option>
-                            <option value="deepfool">DeepFool</option>
                         </select>
                     </div>
 
@@ -499,7 +498,6 @@
                         <select id="robust-attack-type">
                             <option value="fgsm">Fast Gradient Sign Method (FGSM)</option>
                             <option value="pgd">Projected Gradient Descent (PGD)</option>
-                            <option value="deepfool">DeepFool</option>
                         </select>
                     </div>
 
@@ -819,7 +817,7 @@
         function updateComparisonTable(comparisonData) {
             const tableBody = document.getElementById('comparison-table-body');
             tableBody.innerHTML = '';
-            const attacks = ['fgsm', 'pgd', 'deepfool'];
+            const attacks = ['fgsm', 'pgd'];
             attacks.forEach(attack => {
                 const standardAcc = comparisonData.standard[`${attack}_accuracy`] || 0;
                 const robustAcc = comparisonData.robust[`${attack}_accuracy`] || 0;
@@ -838,7 +836,7 @@
         function renderAccuracyComparisonChart(comparisonData) {
             if (accuracyComparisonChart) accuracyComparisonChart.destroy();
             const ctx = document.getElementById('accuracy-comparison-chart').getContext('2d');
-            const attacks = ['fgsm', 'pgd', 'deepfool'];
+            const attacks = ['fgsm', 'pgd'];
             accuracyComparisonChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
